@@ -19,21 +19,28 @@ def getImageArrays(path, side_length, max_num_images): #returns list of images a
                 cur_image_path = path + image_name
                 cur_image = np.array(ndimage.imread(cur_image_path,flatten=False))
                 cur_array_resized = scipy.misc.imresize(cur_image,size=(side_length,side_length))
-                cur_array_flattened = cur_array_resized.reshape((side_length*side_length*3)).T
-                examples += [cur_array_flattened] 
+#                cur_array_flattened = cur_array_resized.reshape((side_length*side_length*3)).T
+#                examples += [cur_array_flattened] 
+                examples += [cur_array_resized]
             except ValueError:
                 print("Error in creating examples",image_name)
+    print("Examples shape", path, np.shape(examples))
     return examples
 
-def getExamples(side_length, image_path, test_ratio, max_num_images=-1):
+def getExamples(side_length, image_path, test_ratio, max_num_images=-10):
+    print("getExamples!")
     cow_images_path = image_path + "cows/"
     notCow_image_path = image_path + "notcows/"
 
     max_num_examples_cow = max_num_images // 2 
     max_num_examples_notCow = max_num_images - max_num_examples_cow
+    print(max_num_examples_notCow)
     examples_cow = getImageArrays(cow_images_path, side_length, max_num_examples_cow)
+    print("examplesCow", np.shape(examples_cow))
+    print(notCow_image_path, "herererer")
     examples_notCow = getImageArrays(notCow_image_path, side_length, max_num_examples_notCow)
-
+    print("examplesNotCow", np.shape(examples_notCow))
+    print("finished getImageArrays!")
     labels_cow = np.ones(len(examples_cow))
     labels_notCow = np.zeros(len(examples_notCow))
 
@@ -65,7 +72,7 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-1):
 #    print("Final Shapes:", "test:", standardized_test_examples.shape, "train:", standardized_train_examples.shape)
     return standardized_train_examples, labels_train, standardized_test_examples, labels_test
 
-#x1,y1,x2,y2 = getExamples(side_length = 150,
-#image_path = "./Logistic_Regression_Data/",
-#test_ratio = .3)
-#print(x1.shape)
+x1,y1,x2,y2 = getExamples(side_length = 150,
+image_path = "../Data/Logistic_Regression_Data/",
+test_ratio = .3)
+print(x1.shape)
