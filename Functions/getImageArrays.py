@@ -10,9 +10,10 @@ from PIL import Image
 
 def getImageArrays(path, side_length, max_num_images): #returns list of images arrays for a specified path
     image_names = os.listdir(path)
-    image_names = image_names[:max_num_images]
     examples = []
     for image_name in image_names:
+        if len(examples) == max_num_images:
+            return examples
         if image_name.split(".")[-1] != "DS_Store":
             try:
                 cur_image_path = path + image_name
@@ -28,8 +29,10 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-1):
     cow_images_path = image_path + "cows/"
     notCow_image_path = image_path + "notcows/"
 
-    examples_cow = getImageArrays(cow_images_path, side_length, max_num_images)
-    examples_notCow = getImageArrays(notCow_image_path, side_length, max_num_images)
+    max_num_examples_cow = max_num_images // 2 
+    max_num_examples_notCow = max_num_images - max_num_examples_cow
+    examples_cow = getImageArrays(cow_images_path, side_length, max_num_examples_cow)
+    examples_notCow = getImageArrays(notCow_image_path, side_length, max_num_examples_notCow)
 
     labels_cow = np.ones(len(examples_cow))
     labels_notCow = np.zeros(len(examples_notCow))
@@ -47,8 +50,8 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-1):
     examples_train = examples[number_examples_test:]
     labels_test = labels[:number_labels_test]
     labels_train = labels[number_labels_test:]
-    print("Number of training examples: ", examples_train.T.shape[1])
-    print("Number of test examples: ", examples_test.T.shape[1])
+    #print("Number of training examples: ", examples_train.T.shape[1])
+    #print("Number of test examples: ", examples_test.T.shape[1])
     
     #reshape labels and examples for future matrix operations
     labels_train = np.reshape(labels_train,(1,len(labels_train)))
@@ -59,7 +62,7 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-1):
      # Standardize color values of the image (decrease computational cost durring cross entropy)
     standardized_train_examples = examples_train/255 #225 is the maximum rgb value/ This is done to decrease varaince in inputs thus more efficint
     standardized_test_examples = examples_test/255
-    print("Final Shapes:", "test:", standardized_test_examples.shape, "train:", standardized_train_examples.shape)
+#    print("Final Shapes:", "test:", standardized_test_examples.shape, "train:", standardized_train_examples.shape)
     return standardized_train_examples, labels_train, standardized_test_examples, labels_test
 
 #x1,y1,x2,y2 = getExamples(side_length = 150,
