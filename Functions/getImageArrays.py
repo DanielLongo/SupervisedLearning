@@ -45,8 +45,21 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-10):
     examples_notCow = getImageArrays(notCow_image_path, side_length, max_num_examples_notCow)
     print("examplesNotCow", np.shape(examples_notCow))
     print("finished getImageArrays!")
-    labels_cow = np.ones(len(examples_cow))
-    labels_notCow = np.zeros(len(examples_notCow))
+    #labels_cow = np.ones(len(examples_cow))
+    cow_labels_len, not_cow_labels_len = len(examples_cow), len(examples_notCow)
+    labels_cow_data = [np.zeros(shape=(cow_labels_len, 1)), np.ones(shape=(cow_labels_len, 1))]
+    labels_not_cow_data = [np.ones(shape=(not_cow_labels_len, 1)), np.zeros(shape=(not_cow_labels_len, 1))]
+ 
+    print("labels_cow_data", labels_cow_data[0].shape)
+    
+    labels_cow = np.stack(labels_cow_data, axis=1)
+    labels_notCow = np.stack(labels_not_cow_data, axis=1)
+ 
+    labels_cow = np.squeeze(labels_cow)
+    labels_notCow = np.squeeze(labels_notCow)
+    
+    print("lables_cow", labels_cow.shape)
+    print("lables_notCow", labels_notCow.shape)
 
     examples = np.concatenate((examples_cow,examples_notCow))
     labels = np.concatenate((labels_cow,labels_notCow))
