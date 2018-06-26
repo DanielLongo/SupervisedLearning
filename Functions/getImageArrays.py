@@ -45,12 +45,13 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-10):
     examples_notCow = getImageArrays(notCow_image_path, side_length, max_num_examples_notCow)
     print("examplesNotCow", np.shape(examples_notCow))
     print("finished getImageArrays!")
+    
     #labels_cow = np.ones(len(examples_cow))
+    
     cow_labels_len, not_cow_labels_len = len(examples_cow), len(examples_notCow)
+    
     labels_cow_data = [np.zeros(shape=(cow_labels_len, 1)), np.ones(shape=(cow_labels_len, 1))]
     labels_not_cow_data = [np.ones(shape=(not_cow_labels_len, 1)), np.zeros(shape=(not_cow_labels_len, 1))]
- 
-    print("labels_cow_data", labels_cow_data[0].shape)
     
     labels_cow = np.stack(labels_cow_data, axis=1)
     labels_notCow = np.stack(labels_not_cow_data, axis=1)
@@ -85,8 +86,11 @@ def getExamples(side_length, image_path, test_ratio, max_num_images=-10):
     #print("Number of test examples: ", examples_test.T.shape[1])
     
     #reshape labels and examples for future matrix operations
-    labels_train = np.reshape(labels_train,(1,len(labels_train)))
-    labels_test = np.reshape(labels_test,(1,len(labels_test)))
+    #labels_train = np.reshape(labels_train,(1,len(labels_train)))
+    #labels_test = np.reshape(labels_test,(1,len(labels_test)))
+    
+    labels_train = labels_train.T
+    labels_test = labels_test.T
     examples_train = examples_train
     examples_test = examples_test
 
